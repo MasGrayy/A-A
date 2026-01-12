@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Cocokkan Gambar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="game">
+  <h1>🧠 Cocokkan Gambar</h1>
+
+  <div class="info">
+    <div>⏱ <span id="time">60</span>s</div>
+    <div>👣 <span id="moves">0</span></div>
+    <div>⭐ <span id="score">0</span></div>
+    <div>🏆 Lv <span id="level">1</span></div>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <button onclick="startGame()">Mulai Ulang</button>
+</div>
+
+<div class="finish-overlay" id="finishOverlay">
+  <div class="finish-box">
+    <h2>🎉 Level Selesai!</h2>
+    <p>⭐ <span id="finalScore"></span></p>
+    <p>👣 <span id="finalMoves"></span></p>
+    <button onclick="nextLevel()">Lanjut Level</button>
+  </div>
+</div>
+
+<script>
+let baseImages=['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg'];
+let images=[], openCards=[];
+let moves=0, matched=0, time=60, timer;
+let score=0, level=1;
+
+const board=document.getElementById('board');
+const movesEl=document.getElementById('moves');
+const scoreEl=document.getElementById('score');
+const levelEl=document.getElementById('level');
+const timeEl=document.getElementById('time');
+const finishOverlay=document.getElementById('finishOverlay');
+const finalScore=document.getElementById('finalScore');
+const finalMoves=document.getElementById('finalMoves');
+
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
+
+function startTimer(){
+  clearInterval(timer);
+  time=60; timeEl.textContent=time;
+  timer=setInterval(()=>{
+    time--; timeEl.textContent=time;
+    if(time===0){clearInterval(timer);alert('⏰ Waktu habis')}
+  },1000);
+}
+
+function startGame(){
+  finishOverlay.classList.remove('show');
+  board.innerHTML='';
+  openCards=[]; matched=0; moves=0;
+  movesEl.textContent=moves;
+  scoreEl.textContent=score;
+  levelEl.textContent=level;
+
+  images=[...baseImages.slice(0,3+level),...baseImages.slice(0,3+level)];
+  shuffle(images);
+  startTimer();
+
+  images.forEach(img=>{
+    const c=document.createElement('div');
+    c.className='card';
+    c.innerHTML=`
+      <div class="inner">
+        <div class="front">?</div>
+        <div class="back"><img src="${img}"></div>
+      </div>`;
+    c.onclick=()=>openCard(c,img);
+    board.appendChild(c);
+  });
+}
+
+function openCard(card,img){
+  if(card.classList.contains('open')||card.classList.contains('matched'))return;
+  if(openCards.length===2)return;
+
+  card.classList.add('open');
+  openCards.push({card,img});
+
+  if(openCards.length===2){
+    moves++; movesEl.textContent=moves;
+    checkMatch();
+  }
+}
+
+function checkMatch(){
+  const[a,b]=openCards;
+  if(a.img===b.img){
+    a.card.classList.add('matched');
+    b.card.classList.add('matched');
+    matched++;
+    score+=10*level;
+    scoreEl.textContent=score;
+    openCards=[];
+    if(matched===images.length/2){
+      clearInterval(timer);
+      finalScore.textContent=score;
+      finalMoves.textContent=moves;
+      finishOverlay.classList.add('show');
+    }
+  }else{
+    setTimeout(()=>{
+      a.card.classList.remove('open');
+      b.card.classList.remove('open');
+      openCards=[];
+    },600);
+  }
+}
+
+function nextLevel(){
+  level++;
+  startGame();
+}
+
+startGame();
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+:root{
+  --bg1:#667eea;
+  --bg2:#764ba2;
+  --accent:#6c63ff;
+  --soft:#f3f4ff;
+  --dark:#2e2e3a;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+}
+
+/* GAME (PORTRAIT FEEL) */
+.game{
+  width:100%;
+  max-width:420px;
+  background:rgba(255,255,255,.95);
+  border-radius:26px;
+  padding:20px 18px 22px;
+  box-shadow:0 25px 50px rgba(0,0,0,.25);
+}
+
+/* TITLE */
+h1{
+  text-align:center;
+  margin:0 0 14px;
+  font-size:22px;
+  color:var(--dark);
+}
+
+/* INFO */
+.info{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.info div{
+  background:var(--soft);
+  padding:8px 0;
+  border-radius:14px;
+  text-align:center;
+  font-weight:600;
+  color:#444;
+}
+
+/* BOARD */
+.board{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:18px;
+}
+
+/* CARD */
+.card{
+  aspect-ratio:1/1;
+  perspective:900px;
+}
+
+.inner{
+  width:100%;
+  height:100%;
+  border-radius:18px;
+  transform-style:preserve-3d;
+  transition:.45s cubic-bezier(.4,.2,.2,1);
+  position:relative;
+}
+
+.card.open .inner,
+.card.matched .inner{
+  transform:rotateY(180deg);
+}
+
+.front,.back{
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  backface-visibility:hidden;
+}
+
+.front{
+  background:linear-gradient(135deg,#e0e5ff,#f7f8ff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  font-weight:700;
+  color:#777;
+}
+
+.back{
+  transform:rotateY(180deg);
+  background:#fff;
+}
+
+.back img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:18px;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:18px;
+  background:linear-gradient(135deg,var(--accent),#8b85ff);
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(108,99,255,.4);
+}
+
+/* POPUP */
+.finish-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+}
+
+.finish-overlay.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.finish-box{
+  background:#fff;
+  width:90%;
+  max-width:320px;
+  padding:26px;
+  border-radius:26px;
+  text-align:center;
+  animation:pop .6s ease;
+}
+
+@keyframes pop{
+  0%{transform:scale(.6);opacity:0}
+  70%{transform:scale(1.05)}
+  100%{transform:scale(1);opacity:1}
+}
